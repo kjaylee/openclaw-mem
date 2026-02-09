@@ -1,0 +1,49 @@
+[project]
+name = "openclaw-mem"
+version = "0.1.0"
+description = "Lightweight RAG memory system for AI agents — Progressive Disclosure, Auto-Capture, 3-Layer Archive"
+authors = [{name = "Jay Lee"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["rag", "memory", "ai-agents", "lancedb", "vector-search", "progressive-disclosure"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "lancedb>=0.4",
+    "sentence-transformers>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+openclaw-mem = "openclaw_mem.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/kjaylee/openclaw-mem"
+Repository = "https://github.com/kjaylee/openclaw-mem"
+Issues = "https://github.com/kjaylee/openclaw-mem/issues"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools.packages.find]
+include = ["openclaw_mem*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
