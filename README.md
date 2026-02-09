@@ -1,9 +1,12 @@
 # openclaw-mem
 
-**Lightweight RAG memory system for AI agents** — Progressive Disclosure, Auto-Capture, 3-Layer Archive.
+**Local-first AI memory** — No API keys. No cloud. No vendor lock-in.
+
+Lightweight RAG memory system for AI agents — Progressive Disclosure, Auto-Capture, 3-Layer Archive, built-in injection defense.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Local-First](https://img.shields.io/badge/local--first-100%25%20offline-brightgreen)](https://github.com/kjaylee/openclaw-mem)
 
 ## Features
 
@@ -223,6 +226,47 @@ Tested with `intfloat/multilingual-e5-small` on Korean+English mixed project dat
 | **Similarity Scores** | 0.83–0.88 | - |
 
 All 10 queries — pure Korean, pure English, and mixed — returned the correct document sections. See [`docs/benchmark.md`](docs/benchmark.md) for full results.
+
+## Why Local-First?
+
+| Cloud-dependent memory | openclaw-mem |
+|------------------------|-------------|
+| API outage → entire memory offline | **100% offline** — works without internet |
+| Data sent to third-party servers | **Data stays on your disk** — zero telemetry |
+| API key management & rotation | **No API keys needed** — `pip install` and go |
+| Vendor lock-in | **MIT license** — use anywhere, modify freely |
+
+Real-world pain: when OpenAI's embedding API went down, cloud-dependent agents lost all memory access. With openclaw-mem, a **470MB local model** (`intfloat/multilingual-e5-small`) gives you Korean + English search that never goes offline.
+
+> **Your data. Your disk. Your rules.**
+
+## Security
+
+openclaw-mem includes a **built-in memory injection sanitizer** that protects against prompt injection attacks stored in memory.
+
+### How it works
+
+- **Observe** — All incoming observations are scanned before storage. Detected injection patterns are filtered out and replaced with `[FILTERED]`.
+- **Index** — During indexing, each chunk is scanned and warnings are logged for any detected patterns (non-blocking, since these are existing files).
+
+### Detected patterns
+
+- Direct command injection (`ignore previous instructions`, `you are now`, `system prompt:`, etc.)
+- Data exfiltration (`send api key`, `curl https://...`, `fetch(...)`)
+- Encoding bypasses (`base64.encode`, `eval()`, `exec()`)
+- Role manipulation (`act as`, `pretend`, `jailbreak`, `DAN mode`)
+
+### Custom patterns
+
+```python
+from openclaw_mem.sanitizer import MemorySanitizer
+
+sanitizer = MemorySanitizer(extra_patterns=[
+    r"my_custom_attack_pattern",
+    r"another_pattern_to_block",
+])
+is_safe, matches = sanitizer.check(user_input)
+```
 
 ## Development
 

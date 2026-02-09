@@ -6,20 +6,33 @@ Usage:
     openclaw-mem observe "decision made" --tag decision
 """
 import argparse
+import logging
 import os
 import sys
 import warnings
 warnings.filterwarnings("ignore")
 
 from openclaw_mem.config import OBSERVATIONS_FILE, OBSERVATION_TAGS
+from openclaw_mem.sanitizer import get_sanitizer
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 def append_observation(text: str, tag: str) -> str:
     """Append an observation to observations file.
 
     Returns the formatted entry string.
+    Injection patterns are detected and filtered before storage.
     """
+    sanitizer = get_sanitizer()
+    is_safe, matched = sanitizer.check(text)
+    if not is_safe:
+        logger.warning(
+            "Injection pattern detected in observation: %s", matched
+        )
+        text = sanitizer.sanitize(text)
+
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     entry = f"- [{timestamp}] **[{tag}]** {text}"
 

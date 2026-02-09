@@ -11,6 +11,7 @@ Supports:
 import argparse
 import glob
 import json
+import logging
 import os
 import sys
 import time
@@ -24,6 +25,9 @@ from openclaw_mem.config import (
 )
 from openclaw_mem.chunker import chunk_markdown
 from openclaw_mem.embedder import get_embedder
+from openclaw_mem.sanitizer import get_sanitizer
+
+logger = logging.getLogger(__name__)
 
 
 def get_db():
@@ -76,6 +80,16 @@ def build_records(filepath, tag=""):
     chunks = chunk_markdown(content, rel_path)
     if not chunks:
         return []
+
+    # Warn on injection patterns in existing file chunks (non-blocking)
+    sanitizer = get_sanitizer()
+    for chunk in chunks:
+        is_safe, matched = sanitizer.check(chunk["content"])
+        if not is_safe:
+            logger.warning(
+                "Injection pattern in %s chunk %s: %s",
+                rel_path, chunk["metadata"]["chunk_index"], matched,
+            )
 
     embedder = get_embedder()
     texts = [c["content"] for c in chunks]
