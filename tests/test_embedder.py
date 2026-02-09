@@ -50,13 +50,13 @@ class TestEmbedderLocal:
 
     def test_embed_empty_list(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         result = e.embed([])
         assert result == []
 
     def test_embed_returns_vectors(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         vectors = e.embed(["hello world"])
         assert len(vectors) == 1
         assert isinstance(vectors[0], list)
@@ -65,7 +65,7 @@ class TestEmbedderLocal:
 
     def test_embed_multiple_texts(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         vectors = e.embed(["hello", "world", "test"])
         assert len(vectors) == 3
         # All should have same dimension
@@ -74,21 +74,21 @@ class TestEmbedderLocal:
 
     def test_embed_single(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         vector = e.embed_single("hello world")
         assert isinstance(vector, list)
         assert len(vector) > 0
 
     def test_embed_consistent(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         v1 = e.embed_single("test text")
         v2 = e.embed_single("test text")
         assert v1 == v2
 
     def test_embed_different_texts_different_vectors(self):
         from openclaw_mem.embedder import Embedder
-        e = Embedder(backend="local", model="all-MiniLM-L6-v2")
+        e = Embedder(backend="local", model="intfloat/multilingual-e5-small")
         v1 = e.embed_single("cats are great")
         v2 = e.embed_single("quantum physics theory")
         assert v1 != v2

@@ -139,7 +139,7 @@ All settings can be overridden via environment variables:
 | `OPENCLAW_MEM_DB_PATH` | `$ROOT/lance_db` | LanceDB database path |
 | `OPENCLAW_MEM_TABLE` | `openclaw_memory` | LanceDB table name |
 | `OPENCLAW_MEM_BACKEND` | `local` | Embedding backend: `local`, `openai`, `ollama` |
-| `OPENCLAW_MEM_MODEL` | `all-MiniLM-L6-v2` | Model name (per backend) |
+| `OPENCLAW_MEM_MODEL` | `intfloat/multilingual-e5-small` | Model name (per backend) |
 | `OPENAI_API_KEY` | *(empty)* | Required only for `openai` backend |
 | `OPENAI_BASE_URL` | *(empty)* | Custom OpenAI-compatible endpoint |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
@@ -153,12 +153,12 @@ All settings can be overridden via environment variables:
 ### Embedding Backends
 
 ```bash
-# Default: local sentence-transformers (no API key, ~90MB model download)
+# Default: local sentence-transformers (no API key, ~470MB model download)
 export OPENCLAW_MEM_BACKEND=local
-export OPENCLAW_MEM_MODEL=all-MiniLM-L6-v2
+export OPENCLAW_MEM_MODEL=intfloat/multilingual-e5-small  # default, Korean+English
 
-# Multilingual (Korean + English)
-export OPENCLAW_MEM_MODEL=intfloat/multilingual-e5-small
+# English-only lightweight alternative
+export OPENCLAW_MEM_MODEL=all-MiniLM-L6-v2
 
 # OpenAI API
 export OPENCLAW_MEM_BACKEND=openai

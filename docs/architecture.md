@@ -85,7 +85,7 @@ The `Embedder` class provides a unified interface across three backends:
 └──────────┴──────────┴────────────────┘
 ```
 
-- **local** (default): Uses sentence-transformers. No API key needed. ~90MB model download on first use.
+- **local** (default): Uses sentence-transformers (`intfloat/multilingual-e5-small`). No API key needed. ~470MB model download on first use. Supports Korean + English.
 - **openai**: Uses OpenAI Embeddings API. Requires `OPENAI_API_KEY`. Install with `pip install openclaw-mem[openai]`.
 - **ollama**: Uses a local Ollama server. Install with `pip install openclaw-mem[ollama]`.
 

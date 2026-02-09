@@ -28,18 +28,14 @@ EMBEDDING_BACKEND = os.environ.get("OPENCLAW_MEM_BACKEND", "local")
 #   openai → OpenAI model (default: text-embedding-3-small)
 #   ollama → Ollama model (default: nomic-embed-text)
 _DEFAULT_MODELS = {
-    "local": "all-MiniLM-L6-v2",
+    "local": "intfloat/multilingual-e5-small",
     "openai": "text-embedding-3-small",
     "ollama": "nomic-embed-text",
 }
 EMBEDDING_MODEL = os.environ.get(
     "OPENCLAW_MEM_MODEL",
-    _DEFAULT_MODELS.get(EMBEDDING_BACKEND, "all-MiniLM-L6-v2")
+    _DEFAULT_MODELS.get(EMBEDDING_BACKEND, "intfloat/multilingual-e5-small")
 )
-
-# Optional: multilingual local model
-# Set OPENCLAW_MEM_MODEL=intfloat/multilingual-e5-small for Korean+English
-# or paraphrase-multilingual-MiniLM-L12-v2
 
 # OpenAI settings (only used when EMBEDDING_BACKEND=openai)
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
