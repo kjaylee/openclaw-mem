@@ -19,10 +19,35 @@ LANCE_DB_PATH = os.environ.get(
 # Table name
 TABLE_NAME = os.environ.get("OPENCLAW_MEM_TABLE", "openclaw_memory")
 
-# Embedding model (multilingual, supports Korean + English)
+# --- Embedding configuration ---
+# Backend: "local" (sentence-transformers), "openai", "ollama"
+EMBEDDING_BACKEND = os.environ.get("OPENCLAW_MEM_BACKEND", "local")
+
+# Model name per backend:
+#   local  → sentence-transformers model (default: all-MiniLM-L6-v2)
+#   openai → OpenAI model (default: text-embedding-3-small)
+#   ollama → Ollama model (default: nomic-embed-text)
+_DEFAULT_MODELS = {
+    "local": "all-MiniLM-L6-v2",
+    "openai": "text-embedding-3-small",
+    "ollama": "nomic-embed-text",
+}
 EMBEDDING_MODEL = os.environ.get(
-    "OPENCLAW_MEM_EMBEDDING_MODEL",
-    "paraphrase-multilingual-MiniLM-L12-v2"
+    "OPENCLAW_MEM_MODEL",
+    _DEFAULT_MODELS.get(EMBEDDING_BACKEND, "all-MiniLM-L6-v2")
+)
+
+# Optional: multilingual local model
+# Set OPENCLAW_MEM_MODEL=intfloat/multilingual-e5-small for Korean+English
+# or paraphrase-multilingual-MiniLM-L12-v2
+
+# OpenAI settings (only used when EMBEDDING_BACKEND=openai)
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "")
+
+# Ollama settings (only used when EMBEDDING_BACKEND=ollama)
+OLLAMA_BASE_URL = os.environ.get(
+    "OLLAMA_BASE_URL", "http://localhost:11434"
 )
 
 # Chunking settings

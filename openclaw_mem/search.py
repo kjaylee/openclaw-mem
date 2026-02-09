@@ -14,20 +14,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from openclaw_mem.config import (
-    LANCE_DB_PATH, TABLE_NAME, EMBEDDING_MODEL,
+    LANCE_DB_PATH, TABLE_NAME,
     DEFAULT_TOP_K, DEFAULT_MIN_SCORE
 )
-
-_model = None
-
-
-def get_model():
-    """Lazy-load the sentence transformer model."""
-    global _model
-    if _model is None:
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer(EMBEDDING_MODEL)
-    return _model
+from openclaw_mem.embedder import get_embedder
 
 
 def _get_table():
@@ -47,8 +37,8 @@ def search(query: str, top_k: int = DEFAULT_TOP_K, source_filter: str = None,
         return []
 
     # Encode query
-    model = get_model()
-    query_vector = model.encode(query).tolist()
+    embedder = get_embedder()
+    query_vector = embedder.embed_single(query)
 
     # Search with cosine metric
     builder = table.search(query_vector).metric("cosine").limit(top_k)

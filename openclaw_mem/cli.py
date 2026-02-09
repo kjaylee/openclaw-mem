@@ -74,7 +74,10 @@ Environment Variables:
   OPENCLAW_MEM_ROOT             Workspace root directory
   OPENCLAW_MEM_DB_PATH          LanceDB database path
   OPENCLAW_MEM_TABLE            LanceDB table name
-  OPENCLAW_MEM_EMBEDDING_MODEL  Sentence transformer model name
+  OPENCLAW_MEM_BACKEND          Embedding backend: local (default), openai, ollama
+  OPENCLAW_MEM_MODEL            Embedding model name (default: all-MiniLM-L6-v2)
+  OPENAI_API_KEY                Required only for openai backend
+  OLLAMA_BASE_URL               Ollama server URL (default: http://localhost:11434)
   OPENCLAW_MEM_ARCHIVE_DIR      Archive directory path
   OPENCLAW_MEM_ARCHIVE_DAYS     Days before archiving (default: 30)
   OPENCLAW_MEM_OBSERVATIONS_FILE  Observations file path

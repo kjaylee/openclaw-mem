@@ -11,8 +11,9 @@
 - **Auto-Capture** — Rule-based extraction of decisions, learnings, errors, and insights from session transcripts. No LLM required.
 - **3-Layer Archive** — Hot (active files), Warm (indexed in RAG), Cold (archived but still searchable).
 - **Observation Logging** — Structured `[tag]` observations with instant indexing.
-- **Multilingual** — Built-in Korean + English support via multilingual embeddings.
-- **Zero Config** — Works out of the box with sensible defaults. Everything is overridable via environment variables.
+- **Pluggable Embeddings** — Local sentence-transformers (default, no API key), OpenAI, or Ollama backends.
+- **Multilingual** — Swap in multilingual models for Korean + English support.
+- **Zero Config** — Works out of the box with `pip install` and no API keys. Everything is overridable via environment variables.
 
 ## Architecture
 
@@ -28,7 +29,7 @@
 │        ▼              ▼                ▼             │
 │  ┌─────────────────────────────────────────────┐    │
 │  │              LanceDB + Embeddings            │    │
-│  │     (paraphrase-multilingual-MiniLM-L12)     │    │
+│  │   local (default) │ openai │ ollama          │    │
 │  └─────────────────────────────────────────────┘    │
 │                                                     │
 │  Memory Layers:                                     │
@@ -43,7 +44,17 @@
 ## Installation
 
 ```bash
+# Default: local embeddings (no API key needed)
 pip install openclaw-mem
+
+# With OpenAI backend support
+pip install openclaw-mem[openai]
+
+# With Ollama backend support
+pip install openclaw-mem[ollama]
+
+# Everything
+pip install openclaw-mem[all]
 ```
 
 ### From source
@@ -127,13 +138,37 @@ All settings can be overridden via environment variables:
 | `OPENCLAW_MEM_ROOT` | Package parent dir | Workspace root directory |
 | `OPENCLAW_MEM_DB_PATH` | `$ROOT/lance_db` | LanceDB database path |
 | `OPENCLAW_MEM_TABLE` | `openclaw_memory` | LanceDB table name |
-| `OPENCLAW_MEM_EMBEDDING_MODEL` | `paraphrase-multilingual-MiniLM-L12-v2` | Sentence transformer model |
+| `OPENCLAW_MEM_BACKEND` | `local` | Embedding backend: `local`, `openai`, `ollama` |
+| `OPENCLAW_MEM_MODEL` | `all-MiniLM-L6-v2` | Model name (per backend) |
+| `OPENAI_API_KEY` | *(empty)* | Required only for `openai` backend |
+| `OPENAI_BASE_URL` | *(empty)* | Custom OpenAI-compatible endpoint |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
 | `OPENCLAW_MEM_CHUNK_SIZE` | `500` | Max chunk size (characters) |
 | `OPENCLAW_MEM_CHUNK_OVERLAP` | `50` | Chunk overlap (characters) |
 | `OPENCLAW_MEM_ARCHIVE_DIR` | `$ROOT/memory/archive` | Archive directory |
 | `OPENCLAW_MEM_ARCHIVE_DAYS` | `30` | Days before archiving |
 | `OPENCLAW_MEM_OBSERVATIONS_FILE` | `$ROOT/memory/observations.md` | Observations file |
 | `OPENCLAW_MEM_SESSION_DIR` | `~/.openclaw/agents/main/sessions` | Session transcripts dir |
+
+### Embedding Backends
+
+```bash
+# Default: local sentence-transformers (no API key, ~90MB model download)
+export OPENCLAW_MEM_BACKEND=local
+export OPENCLAW_MEM_MODEL=all-MiniLM-L6-v2
+
+# Multilingual (Korean + English)
+export OPENCLAW_MEM_MODEL=intfloat/multilingual-e5-small
+
+# OpenAI API
+export OPENCLAW_MEM_BACKEND=openai
+export OPENCLAW_MEM_MODEL=text-embedding-3-small
+export OPENAI_API_KEY=sk-...
+
+# Ollama (local server)
+export OPENCLAW_MEM_BACKEND=ollama
+export OPENCLAW_MEM_MODEL=nomic-embed-text
+```
 
 ## Python API
 
@@ -142,6 +177,7 @@ from openclaw_mem.search import search, search_index, get_detail
 from openclaw_mem.index import index_single, index_observation
 from openclaw_mem.observe import append_observation
 from openclaw_mem.auto_capture import extract_observations_from_text
+from openclaw_mem.embedder import get_embedder, Embedder
 
 # Search
 results = search("deployment", top_k=5)
@@ -158,6 +194,13 @@ append_observation("Cache works great", tag="learning")
 # Extract patterns from text
 obs = extract_observations_from_text("결정: Redis를 사용한다")
 # [{"tag": "decision", "text": "Redis를 사용한다"}]
+
+# Direct embedding access
+embedder = get_embedder()  # uses configured backend
+vectors = embedder.embed(["text 1", "text 2"])
+
+# Custom backend
+embedder = Embedder(backend="openai", model="text-embedding-3-small")
 ```
 
 ## Observation Tags

@@ -19,21 +19,11 @@ warnings.filterwarnings("ignore")
 
 from openclaw_mem.config import (
     WORKSPACE_ROOT, LANCE_DB_PATH, TABLE_NAME,
-    EMBEDDING_MODEL, INDEX_PATTERNS, INDEX_STATE_FILE,
+    INDEX_PATTERNS, INDEX_STATE_FILE,
     ARCHIVE_INDEX_PATTERNS
 )
 from openclaw_mem.chunker import chunk_markdown
-
-_model = None
-
-
-def get_model():
-    """Lazy-load the sentence transformer model."""
-    global _model
-    if _model is None:
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer(EMBEDDING_MODEL)
-    return _model
+from openclaw_mem.embedder import get_embedder
 
 
 def get_db():
@@ -87,9 +77,9 @@ def build_records(filepath, tag=""):
     if not chunks:
         return []
 
-    model = get_model()
+    embedder = get_embedder()
     texts = [c["content"] for c in chunks]
-    embeddings = model.encode(texts, show_progress_bar=False)
+    embeddings = embedder.embed(texts)
 
     records = []
     for i, chunk in enumerate(chunks):
@@ -101,7 +91,7 @@ def build_records(filepath, tag=""):
             "chunk_index": chunk["metadata"]["chunk_index"],
             "date": chunk["metadata"].get("date", ""),
             "tag": tag,
-            "vector": embeddings[i].tolist(),
+            "vector": embeddings[i],
         })
 
     return records
@@ -116,8 +106,8 @@ def build_observation_records(text, tag=""):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     chunk_id = f"obs:{timestamp}:{content_hash}"
 
-    model = get_model()
-    embedding = model.encode(text).tolist()
+    embedder = get_embedder()
+    embedding = embedder.embed_single(text)
 
     return [{
         "id": chunk_id,

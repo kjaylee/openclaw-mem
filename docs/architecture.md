@@ -69,9 +69,29 @@ Markdown Files ────→ index (chunker) ──→ LanceDB ←─ search
                          archive ──→ memory/archive/
 ```
 
+## Embedding Abstraction
+
+The `Embedder` class provides a unified interface across three backends:
+
+```
+┌──────────────────────────────────────┐
+│           Embedder API               │
+│   embed(texts) → list[list[float]]   │
+├──────────┬──────────┬────────────────┤
+│  local   │  openai  │    ollama      │
+│ (default)│ (opt-in) │   (opt-in)     │
+│ ST model │ API call │  local server  │
+│ no key   │ API key  │  no key        │
+└──────────┴──────────┴────────────────┘
+```
+
+- **local** (default): Uses sentence-transformers. No API key needed. ~90MB model download on first use.
+- **openai**: Uses OpenAI Embeddings API. Requires `OPENAI_API_KEY`. Install with `pip install openclaw-mem[openai]`.
+- **ollama**: Uses a local Ollama server. Install with `pip install openclaw-mem[ollama]`.
+
 ## Technology Stack
 
 - **Vector DB**: LanceDB (embedded, zero-config)
-- **Embeddings**: sentence-transformers (paraphrase-multilingual-MiniLM-L12-v2)
+- **Embeddings**: Pluggable — sentence-transformers (default), OpenAI, Ollama
 - **Chunking**: Markdown-aware (headers → paragraphs → character splits)
 - **Storage**: Local filesystem + LanceDB files
