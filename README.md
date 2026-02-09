@@ -212,6 +212,18 @@ embedder = Embedder(backend="openai", model="text-embedding-3-small")
 | `error` | Errors encountered | `에러:`, `Error:`, `FAIL`, `실패` |
 | `insight` | TODOs and insights | `TODO:`, `할일:`, `다음에` |
 
+## Benchmark — Korean Search Accuracy
+
+Tested with `intfloat/multilingual-e5-small` on Korean+English mixed project data.
+
+| Metric | Result | Target |
+|--------|--------|--------|
+| **Accuracy** | **10/10 (100%)** | ≥ 80% |
+| **Avg Response** | **0.38s** | ≤ 1.0s |
+| **Similarity Scores** | 0.83–0.88 | - |
+
+All 10 queries — pure Korean, pure English, and mixed — returned the correct document sections. See [`docs/benchmark.md`](docs/benchmark.md) for full results.
+
 ## Development
 
 ```bash
