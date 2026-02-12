@@ -90,6 +90,27 @@ _RAW_PATTERNS: List[Tuple[str, str]] = [
     ("insight", r'(.{5,}다음에\s+.{10,})'),
     ("insight", r'(.{5,}나중에\s+.{10,})'),
     ("insight", r'(.*exited\s+with\s+code\s+0.+(?:completed|success|done).*)'),
+
+    # ── Preference (선호) ──
+    ("preference", r'선호:\s*(.{10,300})'),
+    ("preference", r'Prefer:\s*(.{10,300})'),
+    ("preference", r'(.{3,}항상\s+.{3,}사용.*)'),
+
+    # ── Mistake (실수/주의) ──
+    ("mistake", r'실수:\s*(.{10,300})'),
+    ("mistake", r'Mistake:\s*(.{10,300})'),
+    ("mistake", r'주의:\s*(.{10,300})'),
+    ("mistake", r'(.{5,}⚠️.{5,})'),
+
+    # ── Architecture (아키텍처/설계) ──
+    ("architecture", r'아키텍처:\s*(.{10,300})'),
+    ("architecture", r'Architecture:\s*(.{10,300})'),
+    ("architecture", r'설계:\s*(.{10,300})'),
+    ("architecture", r'구조:\s*(.{10,300})'),
+
+    # ── Next (다음 단계) ──
+    ("next", r'다음:\s*(.{10,300})'),
+    ("next", r'Next:\s*(.{10,300})'),
 ]
 
 # Compile patterns
@@ -332,6 +353,8 @@ def main():
                         help="Scan a specific session file")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show what would be recorded without writing")
+    parser.add_argument("--route-to-brain", action="store_true",
+                        help="Route observations to project Brain files")
     parser.add_argument("--quiet", "-q", action="store_true",
                         help="Suppress output")
 
@@ -380,8 +403,23 @@ def main():
     elif verbose:
         print("Recording:")
 
-    recorded = record_observations(new_obs, dry_run=args.dry_run,
-                                   verbose=verbose)
+    # Route to Brain files if requested
+    if args.route_to_brain:
+        from openclaw_mem.brain_router import route_observations
+        brain_routed, fallback = route_observations(
+            new_obs, dry_run=args.dry_run, verbose=verbose
+        )
+        # Record only unrouted observations to observations.md
+        recorded_fallback = record_observations(
+            fallback, dry_run=args.dry_run, verbose=verbose
+        )
+        recorded = len(brain_routed) + recorded_fallback
+        if verbose:
+            print(f"  Brain: {len(brain_routed)}, "
+                  f"Observations: {recorded_fallback}")
+    else:
+        recorded = record_observations(new_obs, dry_run=args.dry_run,
+                                       verbose=verbose)
 
     # Persist state (unless dry-run)
     if not args.dry_run:
