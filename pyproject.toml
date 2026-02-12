@@ -1,6 +1,6 @@
 [project]
 name = "openclaw-mem"
-version = "0.1.0"
+version = "0.2.0"
 description = "Lightweight RAG memory system for AI agents — Progressive Disclosure, Auto-Capture, 3-Layer Archive"
 authors = [{name = "Jay Lee"}]
 license = {text = "MIT"}
@@ -38,7 +38,8 @@ openclaw-mem = "openclaw_mem.cli:main"
 [project.urls]
 Homepage = "https://github.com/kjaylee/openclaw-mem"
 Repository = "https://github.com/kjaylee/openclaw-mem"
-Issues = "https://github.com/kjaylee/openclaw-mem/issues"
+Documentation = "https://github.com/kjaylee/openclaw-mem#readme"
+"Bug Tracker" = "https://github.com/kjaylee/openclaw-mem/issues"
 
 [build-system]
 requires = ["setuptools>=68.0"]

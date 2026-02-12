@@ -40,6 +40,9 @@ def main():
     elif command == "brain-check":
         from openclaw_mem.brain_check import main as brain_check_main
         brain_check_main()
+    elif command == "init":
+        from openclaw_mem.init_cmd import main as init_main
+        init_main()
     elif command == "version":
         from openclaw_mem import __version__
         print(f"openclaw-mem {__version__}")
@@ -62,6 +65,7 @@ Commands:
   archive       Archive old memory files (3-Layer: Hot/Warm/Cold)
   auto-capture  Extract observations from session transcripts
   brain-check   Check Brain files for injection patterns
+  init          Initialize memory workspace in current directory
   version       Show version
 
 Examples:
