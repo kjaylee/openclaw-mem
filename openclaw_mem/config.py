@@ -79,4 +79,37 @@ OBSERVATIONS_FILE = os.environ.get(
     "OPENCLAW_MEM_OBSERVATIONS_FILE",
     os.path.join(WORKSPACE_ROOT, "memory", "observations.md")
 )
-OBSERVATION_TAGS = ["learning", "decision", "error", "insight"]
+OBSERVATION_TAGS = [
+    "learning", "decision", "error", "insight",
+    "preference", "mistake", "architecture", "next",
+]
+
+# --- Brain Routing ---
+# Project keyword → Brain file mapping
+BRAIN_PROJECT_KEYWORDS: dict[str, str] = {
+    "sanguo": "memory/projects/sanguo.md",
+    "삼국": "memory/projects/sanguo.md",
+    "portrait": "memory/projects/sanguo.md",
+    "blog": "memory/projects/eastsea-blog.md",
+    "eastsea": "memory/projects/eastsea-blog.md",
+    "포스트": "memory/projects/eastsea-blog.md",
+    "jekyll": "memory/projects/eastsea-blog.md",
+    "game": "memory/projects/game-dev.md",
+    "godot": "memory/projects/game-dev.md",
+    "게임": "memory/projects/game-dev.md",
+}
+
+# Tag → Brain section mapping
+BRAIN_TAG_SECTION: dict[str, str] = {
+    "decision": "## Architecture Decisions",
+    "architecture": "## Architecture Decisions",
+    "learning": "## Lessons Learned",
+    "error": "## Common Mistakes",
+    "mistake": "## Common Mistakes",
+    "insight": "## Next Phase",
+    "next": "## Next Phase",
+    "preference": "## Preferences",
+}
+
+# Brain projects directory (relative to WORKSPACE_ROOT)
+BRAIN_PROJECTS_DIR = os.path.join(WORKSPACE_ROOT, "memory", "projects")

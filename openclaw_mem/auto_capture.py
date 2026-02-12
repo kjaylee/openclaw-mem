@@ -90,6 +90,27 @@ _RAW_PATTERNS: List[Tuple[str, str]] = [
     ("insight", r'(.{5,}다음에\s+.{10,})'),
     ("insight", r'(.{5,}나중에\s+.{10,})'),
     ("insight", r'(.*exited\s+with\s+code\s+0.+(?:completed|success|done).*)'),
+
+    # ── Preference (선호) ──
+    ("preference", r'선호:\s*(.{10,300})'),
+    ("preference", r'Prefer:\s*(.{10,300})'),
+    ("preference", r'(.{3,}항상\s+.{3,}사용.*)'),
+
+    # ── Mistake (실수/주의) ──
+    ("mistake", r'실수:\s*(.{10,300})'),
+    ("mistake", r'Mistake:\s*(.{10,300})'),
+    ("mistake", r'주의:\s*(.{10,300})'),
+    ("mistake", r'(.{5,}⚠️.{5,})'),
+
+    # ── Architecture (아키텍처/설계) ──
+    ("architecture", r'아키텍처:\s*(.{10,300})'),
+    ("architecture", r'Architecture:\s*(.{10,300})'),
+    ("architecture", r'설계:\s*(.{10,300})'),
+    ("architecture", r'구조:\s*(.{10,300})'),
+
+    # ── Next (다음 단계) ──
+    ("next", r'다음:\s*(.{10,300})'),
+    ("next", r'Next:\s*(.{10,300})'),
 ]
 
 # Compile patterns
