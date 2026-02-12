@@ -19,10 +19,12 @@ class TestObserve:
         self.obs_file = os.path.join(self.tmpdir, "observations.md")
         os.environ["OPENCLAW_MEM_OBSERVATIONS_FILE"] = self.obs_file
 
-        # Reload config to pick up env var
+        # Reload config then observe to pick up env var
         import importlib
         import openclaw_mem.config
         importlib.reload(openclaw_mem.config)
+        import openclaw_mem.observe
+        importlib.reload(openclaw_mem.observe)
 
     def teardown_method(self):
         """Clean up."""
