@@ -37,6 +37,9 @@ def main():
     elif command in ("auto-capture", "capture"):
         from openclaw_mem.auto_capture import main as capture_main
         capture_main()
+    elif command == "brain-check":
+        from openclaw_mem.brain_check import main as brain_check_main
+        brain_check_main()
     elif command == "version":
         from openclaw_mem import __version__
         print(f"openclaw-mem {__version__}")
@@ -58,6 +61,7 @@ Commands:
   observe       Record a structured observation
   archive       Archive old memory files (3-Layer: Hot/Warm/Cold)
   auto-capture  Extract observations from session transcripts
+  brain-check   Check Brain files for injection patterns
   version       Show version
 
 Examples:
@@ -69,6 +73,9 @@ Examples:
   openclaw-mem observe "Redis cache works well" --tag learning
   openclaw-mem archive --execute
   openclaw-mem auto-capture --since 6h
+  openclaw-mem auto-capture --since 6h --route-to-brain
+  openclaw-mem brain-check
+  openclaw-mem brain-check --fix
 
 Environment Variables:
   OPENCLAW_MEM_ROOT             Workspace root directory
