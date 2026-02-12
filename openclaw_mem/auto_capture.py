@@ -353,6 +353,8 @@ def main():
                         help="Scan a specific session file")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show what would be recorded without writing")
+    parser.add_argument("--route-to-brain", action="store_true",
+                        help="Route observations to project Brain files")
     parser.add_argument("--quiet", "-q", action="store_true",
                         help="Suppress output")
 
@@ -401,8 +403,23 @@ def main():
     elif verbose:
         print("Recording:")
 
-    recorded = record_observations(new_obs, dry_run=args.dry_run,
-                                   verbose=verbose)
+    # Route to Brain files if requested
+    if args.route_to_brain:
+        from openclaw_mem.brain_router import route_observations
+        brain_routed, fallback = route_observations(
+            new_obs, dry_run=args.dry_run, verbose=verbose
+        )
+        # Record only unrouted observations to observations.md
+        recorded_fallback = record_observations(
+            fallback, dry_run=args.dry_run, verbose=verbose
+        )
+        recorded = len(brain_routed) + recorded_fallback
+        if verbose:
+            print(f"  Brain: {len(brain_routed)}, "
+                  f"Observations: {recorded_fallback}")
+    else:
+        recorded = record_observations(new_obs, dry_run=args.dry_run,
+                                       verbose=verbose)
 
     # Persist state (unless dry-run)
     if not args.dry_run:
