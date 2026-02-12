@@ -3,14 +3,13 @@ name = "openclaw-mem"
 version = "0.2.0"
 description = "Lightweight RAG memory system for AI agents — Progressive Disclosure, Auto-Capture, 3-Layer Archive"
 authors = [{name = "Jay Lee"}]
-license = {text = "MIT"}
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["rag", "memory", "ai-agents", "lancedb", "vector-search", "progressive-disclosure"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
